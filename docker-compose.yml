@@ -1,0 +1,20 @@
+services:
+  mockoon-novnc:
+    image: lasuillard/mockoon-novnc:latest
+    container_name: mockoon-novnc
+    environment:
+      # Resolusi canvas noVNC (GUI)
+      - DISPLAY_WIDTH=1600
+      - DISPLAY_HEIGHT=900
+      # Aktifkan path-based + header-based port forwarding (http://host/3000/...)
+      - NGINX_PATHPORT=yes
+    volumes:
+      # Mount semua env JSON ke /storage (read-only) supaya bisa di-import dari GUI
+      - ./envs:/storage:ro
+    ports:
+      # Bind ke localhost saja; akses publik lewat Nginx host (reverse proxy)
+      - "127.0.0.1:80:80"       # Path-based forwarding (http://host/3000/...)
+      - "127.0.0.1:8081:8081"   # noVNC (GUI)
+      - "127.0.0.1:3678:3678"   # contoh port environment kamu (ubah sesuai kebutuhan)
+    restart: unless-stopped
+
